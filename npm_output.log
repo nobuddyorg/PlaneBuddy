@@ -1,0 +1,26 @@
+
+> phaser3-typescript-sidescroller@1.0.0 start
+> webpack serve --open
+
+<i> [webpack-dev-server] Project is running at:
+<i> [webpack-dev-server] Loopback: http://localhost:9000/
+<i> [webpack-dev-server] On Your Network (IPv4): http://192.168.0.2:9000/
+<i> [webpack-dev-server] Content not from webpack is served from '/app/dist' directory
+asset bundle.js 8.16 MiB [emitted] (name: main)
+asset index.html 314 bytes [emitted] [from: index.html] [copied]
+runtime modules 28 KiB 12 modules
+modules by path ./node_modules/ 7.62 MiB
+  modules by path ./node_modules/webpack-dev-server/client/ 71.8 KiB 16 modules
+  modules by path ./node_modules/webpack/hot/*.js 5.56 KiB
+    ./node_modules/webpack/hot/dev-server.js 2.33 KiB [built] [code generated]
+    + 3 modules
+  modules by path ./node_modules/html-entities/dist/esm/*.js 33.5 KiB
+    ./node_modules/html-entities/dist/esm/index.js 4.98 KiB [built] [code generated]
+    + 3 modules
+  ./node_modules/phaser/dist/phaser.js 7.49 MiB [built] [code generated]
+  ./node_modules/ansi-html-community/index.js 4.16 KiB [built] [code generated]
+  ./node_modules/events/events.js 14.5 KiB [built] [code generated]
+modules by path ./src/ 2.22 KiB
+  ./src/main.ts 522 bytes [built] [code generated]
+  ./src/scenes/MainScene.ts 1.71 KiB [built] [code generated]
+webpack 5.104.1 compiled successfully in 5034 ms
