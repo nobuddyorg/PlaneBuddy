@@ -13,6 +13,11 @@ export class Airplane extends Phaser.Physics.Arcade.Sprite {
   }
 
   public updateAirplane(): void {
+    this._handlePlayerInput();
+    this._applyFlightPhysics();
+  }
+
+  private _handlePlayerInput(): void {
     const pointer = this.scene.input.activePointer;
     const body = this.body as Phaser.Physics.Arcade.Body;
 
@@ -24,6 +29,10 @@ export class Airplane extends Phaser.Physics.Arcade.Sprite {
         body.velocity.y += FlightConstants.SINK_FORCE;
       }
     }
+  }
+
+  private _applyFlightPhysics(): void {
+    const body = this.body as Phaser.Physics.Arcade.Body;
 
     if (body.velocity.x < FlightConstants.STALL_SPEED) {
       body.setAngularVelocity(FlightConstants.TUMBLE_ANGULAR_VELOCITY);

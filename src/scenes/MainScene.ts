@@ -11,15 +11,15 @@ import {
 } from '../constants';
 import { Airplane } from '../game-objects/Airplane';
 import { UIManager } from '../ui/UIManager';
+import { Slingshot } from '../game-objects/Slingshot';
 
 export class MainScene extends Phaser.Scene {
   private airplane!: Airplane;
   private uiManager!: UIManager;
+  private slingshot!: Slingshot;
   private ground!: Phaser.GameObjects.Rectangle;
   private landingZone!: Phaser.GameObjects.Rectangle;
-  private isLaunched: boolean = false;
   private isGameOver: boolean = false;
-  private dragStart!: Phaser.Math.Vector2;
 
   constructor() {
     super({ key: 'MainScene' });
@@ -33,7 +33,7 @@ export class MainScene extends Phaser.Scene {
     this.uiManager = new UIManager(this);
     this.setupWorld();
     this.createGameObjects();
-    this.setupInputHandling();
+    this.slingshot = new Slingshot(this, this.airplane);
     this.setupPhysics();
   }
 
@@ -69,12 +69,6 @@ export class MainScene extends Phaser.Scene {
     this.airplane = new Airplane(this, AirplaneConstants.START_X, this.cameras.main.height - AirplaneConstants.START_Y_OFFSET);
   }
 
-  private setupInputHandling(): void {
-    this.input.on('pointerdown', this.handlePointerDown, this);
-    this.input.on('pointermove', this.handlePointerMove, this);
-    this.input.on('pointerup', this.handlePointerUp, this);
-  }
-
   private setupPhysics(): void {
     this.cameras.main.startFollow(this.airplane);
     this.physics.add.collider(this.airplane, this.ground, this.handleCollision, undefined, this);
@@ -92,10 +86,14 @@ export class MainScene extends Phaser.Scene {
       return;
     }
 
+    this._endGame(terrain === this.landingZone);
+  }
+
+  private _endGame(isSuccess: boolean): void {
     this.isGameOver = true;
     (this.airplane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
 
-    if (terrain === this.landingZone) {
+    if (isSuccess) {
       this.uiManager.showSuccessMessage();
     } else {
       this.uiManager.showFailureMessage();
@@ -106,37 +104,8 @@ export class MainScene extends Phaser.Scene {
     });
   }
 
-  handlePointerDown(pointer: Phaser.Input.Pointer): void {
-    if (!this.isLaunched) {
-      this.dragStart = pointer.position.clone();
-    }
-  }
-
-  handlePointerMove(): void {
-    if (!this.isLaunched && this.dragStart) {
-      // Visualize the slingshot power/angle
-    }
-  }
-
-  handlePointerUp(pointer: Phaser.Input.Pointer): void {
-    if (!this.isLaunched && this.dragStart) {
-      const dragEnd = pointer.position.clone();
-      const dragVector = dragEnd.subtract(this.dragStart);
-
-      // Design Decision: Cap the launch power to prevent excessive force.
-      if (dragVector.length() > SlingshotConstants.MAX_DRAG_DISTANCE) {
-        dragVector.normalize().scale(SlingshotConstants.MAX_DRAG_DISTANCE);
-      }
-
-      // Design Decision: The launch velocity is proportional to the drag distance, creating an intuitive slingshot feel.
-      const launchVelocity = dragVector.scale(SlingshotConstants.VELOCITY_MULTIPLIER);
-      (this.airplane.body as Phaser.Physics.Arcade.Body).setVelocity(launchVelocity.x, launchVelocity.y);
-      this.isLaunched = true;
-    }
-  }
-
   update(): void {
-    if (this.isLaunched && !this.isGameOver) {
+    if (this.slingshot.isLaunched && !this.isGameOver) {
       this.airplane.updateAirplane();
     }
   }
