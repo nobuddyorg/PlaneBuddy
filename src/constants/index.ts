@@ -5,14 +5,14 @@ export const WorldConstants = {
 
 export const GroundConstants = {
   HEIGHT: 50,
-  COLOR: 0x8B4513,
+  COLOR: 0x8b4513,
 };
 
 export const LandingZoneConstants = {
   X: 3000,
   WIDTH: 400,
   HEIGHT: 50,
-  COLOR: 0x00FF00,
+  COLOR: 0x00ff00,
 };
 
 export const PaperPlaneConstants = {
@@ -20,7 +20,7 @@ export const PaperPlaneConstants = {
   START_Y_OFFSET: 150,
   BOUNCE: 0.5,
   DRAG: 100,
-  TEXTURE: 'paper-plane',
+  TEXTURE: "paper-plane",
 };
 
 export const SlingshotConstants = {
@@ -42,10 +42,10 @@ export const CollisionConstants = {
 };
 
 export const UIConstants = {
-  BackgroundColor: '#242526',
-  SuccessMessage: 'Success!',
-  FailureMessage: 'Failure!',
-  SuccessColor: '#00ff00',
-  FailureColor: '#ff0000',
-  FontSize: '64px',
+  BackgroundColor: "#242526",
+  SuccessMessage: "Success!",
+  FailureMessage: "Failure!",
+  SuccessColor: "#00ff00",
+  FailureColor: "#ff0000",
+  FontSize: "64px",
 };

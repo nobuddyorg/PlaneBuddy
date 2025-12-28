@@ -1,5 +1,5 @@
-import 'phaser';
-import { PaperPlaneConstants, FlightConstants } from '../constants';
+import "phaser";
+import { PaperPlaneConstants, FlightConstants } from "../constants";
 
 export class PaperPlane extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -13,7 +13,10 @@ export class PaperPlane extends Phaser.Physics.Arcade.Sprite {
   }
 
   public launch(launchVelocity: Phaser.Math.Vector2): void {
-    (this.body as Phaser.Physics.Arcade.Body).setVelocity(launchVelocity.x, launchVelocity.y);
+    (this.body as Phaser.Physics.Arcade.Body).setVelocity(
+      launchVelocity.x,
+      launchVelocity.y,
+    );
   }
 
   public updatePaperPlane(): void {
@@ -30,7 +33,10 @@ export class PaperPlane extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (pointer.y < this.y) {
-      const liftAmount = Math.max(0, body.velocity.x / FlightConstants.LIFT_VELOCITY_DIVISOR);
+      const liftAmount = Math.max(
+        0,
+        body.velocity.x / FlightConstants.LIFT_VELOCITY_DIVISOR,
+      );
       body.velocity.y -= liftAmount * FlightConstants.LIFT_COEFFICIENT;
     } else {
       body.velocity.y += FlightConstants.SINK_FORCE;
