@@ -26,7 +26,7 @@ export class MainScene extends Phaser.Scene {
 
   preload(): void {
     this.load.image("paper-plane", "assets/paper-plane.svg");
-    this.textures.generate('pixel', { data: ['1'], pixelWidth: 1 });
+    this.textures.generate("pixel", { data: ["1"], pixelWidth: 1 });
   }
 
   create(): void {
@@ -68,31 +68,31 @@ export class MainScene extends Phaser.Scene {
   }
 
   private createGround(): void {
-  this.ground = this.physics.add.staticImage(
+    this.ground = this.physics.add.staticImage(
       0,
-    this.cameras.main.height - GroundConstants.HEIGHT / 2,
-    'pixel'
-  );
-  this.ground.setOrigin(0, 0.5);
-  this.ground.displayWidth = this.physics.world.bounds.width;
-  this.ground.displayHeight = GroundConstants.HEIGHT;
-  this.ground.setTint(GroundConstants.COLOR);
-  this.ground.refreshBody();
-  this.ground.setName('ground');
+      this.cameras.main.height - GroundConstants.HEIGHT / 2,
+      "pixel",
+    );
+    this.ground.setOrigin(0, 0.5);
+    this.ground.displayWidth = this.physics.world.bounds.width;
+    this.ground.displayHeight = GroundConstants.HEIGHT;
+    this.ground.setTint(GroundConstants.COLOR);
+    this.ground.refreshBody();
+    this.ground.setName("ground");
   }
 
   private createLandingZone(): void {
-  this.landingZone = this.physics.add.staticImage(
+    this.landingZone = this.physics.add.staticImage(
       LandingZoneConstants.X,
-    this.cameras.main.height - LandingZoneConstants.HEIGHT / 2,
-    'pixel'
-  );
-  this.landingZone.setOrigin(0, 0.5);
-  this.landingZone.displayWidth = LandingZoneConstants.WIDTH;
-  this.landingZone.displayHeight = LandingZoneConstants.HEIGHT;
-  this.landingZone.setTint(LandingZoneConstants.COLOR);
-  this.landingZone.refreshBody();
-  this.landingZone.setName('landingZone');
+      this.cameras.main.height - LandingZoneConstants.HEIGHT / 2,
+      "pixel",
+    );
+    this.landingZone.setOrigin(0, 0.5);
+    this.landingZone.displayWidth = LandingZoneConstants.WIDTH;
+    this.landingZone.displayHeight = LandingZoneConstants.HEIGHT;
+    this.landingZone.setTint(LandingZoneConstants.COLOR);
+    this.landingZone.refreshBody();
+    this.landingZone.setName("landingZone");
   }
 
   private createPaperPlane(): void {

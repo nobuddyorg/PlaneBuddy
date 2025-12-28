@@ -6,11 +6,15 @@ import { Canvas, Image } from "canvas";
 import { PaperPlane } from "../game-objects/PaperPlane";
 
 // Stubs for browser-specific objects
-const dom = new JSDOM('<!DOCTYPE html><html><head></head><body><div id="game-container"></div></body></html>');
+const dom = new JSDOM(
+  '<!DOCTYPE html><html><head></head><body><div id="game-container"></div></body></html>',
+);
 global.window = dom.window as unknown as Window & typeof globalThis;
 global.document = dom.window.document;
 global.Image = Image as unknown as typeof global.Image;
-global.HTMLCanvasElement = dom.window.HTMLCanvasElement || (Canvas as unknown as typeof global.HTMLCanvasElement);
+global.HTMLCanvasElement =
+  dom.window.HTMLCanvasElement ||
+  (Canvas as unknown as typeof global.HTMLCanvasElement);
 (global.window as unknown as { Image: unknown }).Image = global.Image;
 
 // Polyfill for requestAnimationFrame
@@ -37,8 +41,11 @@ describe("MainScene View", () => {
     }
 
     preload() {
-      this.load.image("paper-plane", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
-      this.textures.generate('pixel', { data: ['1'], pixelWidth: 1 });
+      this.load.image(
+        "paper-plane",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+      );
+      this.textures.generate("pixel", { data: ["1"], pixelWidth: 1 });
     }
 
     create() {
@@ -63,7 +70,7 @@ describe("MainScene View", () => {
     game = new Phaser.Game(config);
 
     const timeout = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Scene creation timed out')), 10000)
+      setTimeout(() => reject(new Error("Scene creation timed out")), 10000),
     );
 
     await Promise.race([sceneCreatedPromise, timeout]);
@@ -78,7 +85,9 @@ describe("MainScene View", () => {
   });
 
   it("should have a visible paper plane", () => {
-    const paperPlane = scene.children.list.find(obj => obj instanceof PaperPlane) as PaperPlane;
+    const paperPlane = scene.children.list.find(
+      (obj) => obj instanceof PaperPlane,
+    ) as PaperPlane;
     expect(paperPlane).toBeDefined();
     expect(paperPlane.visible).toBe(true);
     expect(paperPlane.x).toBeGreaterThan(0);
@@ -86,13 +95,13 @@ describe("MainScene View", () => {
   });
 
   it("should have a visible ground", () => {
-    const ground = scene.children.getByName('ground');
+    const ground = scene.children.getByName("ground");
     expect(ground).toBeDefined();
     expect(ground?.visible).toBe(true);
   });
 
   it("should have a visible landing zone", () => {
-    const landingZone = scene.children.getByName('landingZone');
+    const landingZone = scene.children.getByName("landingZone");
     expect(landingZone).toBeDefined();
     expect(landingZone?.visible).toBe(true);
   });
