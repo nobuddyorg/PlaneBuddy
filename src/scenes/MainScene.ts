@@ -1,4 +1,4 @@
-import 'phaser';
+import "phaser";
 import {
   WorldConstants,
   GroundConstants,
@@ -6,11 +6,11 @@ import {
   PaperPlaneConstants,
   CollisionConstants,
   UIConstants,
-} from '../constants';
-import { PaperPlane } from '../game-objects/PaperPlane';
-import { UIManager } from '../ui/UIManager';
-import { Slingshot } from '../game-objects/Slingshot';
-import { GameState } from '../state/GameState';
+} from "../constants";
+import { PaperPlane } from "../game-objects/PaperPlane";
+import { UIManager } from "../ui/UIManager";
+import { Slingshot } from "../game-objects/Slingshot";
+import { GameState } from "../state/GameState";
 
 export class MainScene extends Phaser.Scene {
   private paperPlane!: PaperPlane;
@@ -21,18 +21,22 @@ export class MainScene extends Phaser.Scene {
   private gameState: GameState = GameState.ReadyToLaunch;
 
   constructor() {
-    super({ key: 'MainScene' });
+    super({ key: "MainScene" });
   }
 
   preload(): void {
-    this.load.image('airplane', 'assets/airplane.svg');
+    this.load.image("paper-plane", "assets/paper-plane.svg");
   }
 
   create(): void {
     this.uiManager = new UIManager(this);
     this.setupWorld();
     this.createGameObjects();
-    this.slingshot = new Slingshot(this, this.paperPlane, this.onLaunch.bind(this));
+    this.slingshot = new Slingshot(
+      this,
+      this.paperPlane,
+      this.onLaunch.bind(this),
+    );
     this.setupPhysics();
   }
 
@@ -42,8 +46,18 @@ export class MainScene extends Phaser.Scene {
 
   private setupWorld(): void {
     this.cameras.main.setBackgroundColor(UIConstants.BackgroundColor);
-    this.cameras.main.setBounds(0, 0, WorldConstants.WIDTH, WorldConstants.HEIGHT);
-    this.physics.world.setBounds(0, 0, WorldConstants.WIDTH, WorldConstants.HEIGHT);
+    this.cameras.main.setBounds(
+      0,
+      0,
+      WorldConstants.WIDTH,
+      WorldConstants.HEIGHT,
+    );
+    this.physics.world.setBounds(
+      0,
+      0,
+      WorldConstants.WIDTH,
+      WorldConstants.HEIGHT,
+    );
   }
 
   private createGameObjects(): void {
@@ -53,7 +67,13 @@ export class MainScene extends Phaser.Scene {
   }
 
   private createGround(): void {
-    this.ground = this.add.rectangle(0, this.cameras.main.height - GroundConstants.HEIGHT, this.physics.world.bounds.width, GroundConstants.HEIGHT, GroundConstants.COLOR) as unknown as Phaser.GameObjects.Rectangle;
+    this.ground = this.add.rectangle(
+      0,
+      this.cameras.main.height - GroundConstants.HEIGHT,
+      this.physics.world.bounds.width,
+      GroundConstants.HEIGHT,
+      GroundConstants.COLOR,
+    ) as unknown as Phaser.GameObjects.Rectangle;
     this.physics.add.existing(this.ground, true);
     const groundBody = this.ground.body as Phaser.Physics.Arcade.Body;
     groundBody.setAllowGravity(false);
@@ -61,7 +81,13 @@ export class MainScene extends Phaser.Scene {
   }
 
   private createLandingZone(): void {
-    this.landingZone = this.add.rectangle(LandingZoneConstants.X, this.cameras.main.height - LandingZoneConstants.HEIGHT, LandingZoneConstants.WIDTH, LandingZoneConstants.HEIGHT, LandingZoneConstants.COLOR) as unknown as Phaser.GameObjects.Rectangle;
+    this.landingZone = this.add.rectangle(
+      LandingZoneConstants.X,
+      this.cameras.main.height - LandingZoneConstants.HEIGHT,
+      LandingZoneConstants.WIDTH,
+      LandingZoneConstants.HEIGHT,
+      LandingZoneConstants.COLOR,
+    ) as unknown as Phaser.GameObjects.Rectangle;
     this.physics.add.existing(this.landingZone, true);
     const landingZoneBody = this.landingZone.body as Phaser.Physics.Arcade.Body;
     landingZoneBody.setAllowGravity(false);
@@ -69,16 +95,35 @@ export class MainScene extends Phaser.Scene {
   }
 
   private createPaperPlane(): void {
-    this.paperPlane = new PaperPlane(this, PaperPlaneConstants.START_X, this.cameras.main.height - PaperPlaneConstants.START_Y_OFFSET);
+    this.paperPlane = new PaperPlane(
+      this,
+      PaperPlaneConstants.START_X,
+      this.cameras.main.height - PaperPlaneConstants.START_Y_OFFSET,
+    );
   }
 
   private setupPhysics(): void {
     this.cameras.main.startFollow(this.paperPlane);
-    this.physics.add.collider(this.paperPlane, this.ground, this.handleCollision, undefined, this);
-    this.physics.add.collider(this.paperPlane, this.landingZone, this.handleCollision, undefined, this);
+    this.physics.add.collider(
+      this.paperPlane,
+      this.ground,
+      this.handleCollision,
+      undefined,
+      this,
+    );
+    this.physics.add.collider(
+      this.paperPlane,
+      this.landingZone,
+      this.handleCollision,
+      undefined,
+      this,
+    );
   }
 
-  handleCollision(paperPlane: Phaser.Types.Physics.Arcade.GameObjectWithBody, terrain: Phaser.Types.Physics.Arcade.GameObjectWithBody): void {
+  handleCollision(
+    paperPlane: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    terrain: Phaser.Types.Physics.Arcade.GameObjectWithBody,
+  ): void {
     if (this.gameState === GameState.GameOver) {
       return;
     }
@@ -88,7 +133,9 @@ export class MainScene extends Phaser.Scene {
 
   private _endGame(isSuccess: boolean): void {
     this.gameState = GameState.GameOver;
-    (this.paperPlane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
+    (this.paperPlane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(
+      CollisionConstants.TUMBLE_ANGULAR_VELOCITY,
+    );
 
     if (isSuccess) {
       this.uiManager.showSuccessMessage();
@@ -96,7 +143,7 @@ export class MainScene extends Phaser.Scene {
       this.uiManager.showFailureMessage();
     }
 
-    this.input.once('pointerdown', () => {
+    this.input.once("pointerdown", () => {
       this.scene.restart();
     });
   }

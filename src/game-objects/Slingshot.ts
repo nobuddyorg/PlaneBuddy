@@ -1,6 +1,6 @@
-import 'phaser';
-import { PaperPlane } from './PaperPlane';
-import { SlingshotConstants } from '../constants';
+import "phaser";
+import { PaperPlane } from "./PaperPlane";
+import { SlingshotConstants } from "../constants";
 
 export class Slingshot {
   private scene: Phaser.Scene;
@@ -8,13 +8,17 @@ export class Slingshot {
   private dragStart?: Phaser.Math.Vector2;
   private onLaunch: () => void;
 
-  constructor(scene: Phaser.Scene, paperPlane: PaperPlane, onLaunch: () => void) {
+  constructor(
+    scene: Phaser.Scene,
+    paperPlane: PaperPlane,
+    onLaunch: () => void,
+  ) {
     this.scene = scene;
     this.paperPlane = paperPlane;
     this.onLaunch = onLaunch;
 
-    this.scene.input.on('pointerdown', this.handlePointerDown, this);
-    this.scene.input.on('pointerup', this.handlePointerUp, this);
+    this.scene.input.on("pointerdown", this.handlePointerDown, this);
+    this.scene.input.on("pointerup", this.handlePointerUp, this);
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
@@ -33,7 +37,9 @@ export class Slingshot {
     }
   }
 
-  private _calculateLaunchVelocity(dragVector: Phaser.Math.Vector2): Phaser.Math.Vector2 {
+  private _calculateLaunchVelocity(
+    dragVector: Phaser.Math.Vector2,
+  ): Phaser.Math.Vector2 {
     if (dragVector.length() > SlingshotConstants.MAX_DRAG_DISTANCE) {
       dragVector.normalize().scale(SlingshotConstants.MAX_DRAG_DISTANCE);
     }

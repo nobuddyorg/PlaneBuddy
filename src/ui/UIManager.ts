@@ -1,5 +1,5 @@
-import 'phaser';
-import { UIConstants } from '../constants';
+import "phaser";
+import { UIConstants } from "../constants";
 
 export class UIManager {
   private scene: Phaser.Scene;
@@ -21,7 +21,7 @@ export class UIManager {
       this.scene.cameras.main.width / 2,
       this.scene.cameras.main.height / 2,
       message,
-      { fontSize: UIConstants.FontSize, color: color }
+      { fontSize: UIConstants.FontSize, color: color },
     );
     text.setOrigin(0.5);
   }
