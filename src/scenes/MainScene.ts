@@ -1,7 +1,7 @@
 import 'phaser';
 
 export class MainScene extends Phaser.Scene {
-  private airplane!: Phaser.GameObjects.Triangle;
+  private airplane!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private ground!: Phaser.GameObjects.Rectangle;
   private landingZone!: Phaser.GameObjects.Rectangle;
   private isLaunched: boolean = false;
@@ -13,7 +13,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload(): void {
-    // No assets to load yet
+    this.load.image('airplane', 'assets/airplane.svg');
   }
 
   create(): void {
@@ -36,12 +36,10 @@ export class MainScene extends Phaser.Scene {
     (this.landingZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
 
     // Create the airplane
-    this.airplane = this.add.triangle(100, this.cameras.main.height - 150, 0, 0, 100, 25, 0, 50, 0xffffff);
-    this.physics.add.existing(this.airplane);
-    const airplaneBody = this.airplane.body as Phaser.Physics.Arcade.Body;
-    airplaneBody.setBounce(0.5);
-    airplaneBody.setCollideWorldBounds(true);
-    airplaneBody.setDrag(100, 100);
+    this.airplane = this.physics.add.sprite(100, this.cameras.main.height - 150, 'airplane');
+    this.airplane.setBounce(0.5);
+    this.airplane.setCollideWorldBounds(true);
+    this.airplane.setDrag(100, 100);
 
     // Set the camera to follow the airplane
     this.cameras.main.startFollow(this.airplane);
@@ -61,7 +59,7 @@ export class MainScene extends Phaser.Scene {
    * @param airplane The airplane game object.
    * @param terrain The terrain game object (ground or landing zone).
    */
-  handleCollision(airplane: Phaser.Types.Physics.Arcade.GameObjectWithBody, terrain: Phaser.Types.Physics.Arcade.GameObjectWithBody): void {
+  handleCollision(airplane: any, terrain: any): void {
     if (this.isGameOver) {
       return;
     }
