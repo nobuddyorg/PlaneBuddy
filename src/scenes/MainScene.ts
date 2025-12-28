@@ -114,6 +114,7 @@ export class MainScene extends Phaser.Scene {
    * @param airplane The airplane game object.
    * @param terrain The terrain game object (ground or landing zone).
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleCollision(airplane: any, terrain: any): void {
     if (this.isGameOver) {
       return;
@@ -139,7 +140,7 @@ export class MainScene extends Phaser.Scene {
     }
   }
 
-  handlePointerMove(pointer: Phaser.Input.Pointer): void {
+  handlePointerMove(): void {
     if (!this.isLaunched && this.dragStart) {
       // Visualize the slingshot power/angle
     }
