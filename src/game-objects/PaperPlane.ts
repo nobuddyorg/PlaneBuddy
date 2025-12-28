@@ -22,6 +22,7 @@ export class PaperPlane extends Phaser.Physics.Arcade.Sprite {
   public updatePaperPlane(): void {
     this._applyPlayerInput();
     this._applyFlightPhysics();
+    this.smoothRotation();
   }
 
   private _applyPlayerInput(): void {
@@ -50,7 +51,12 @@ export class PaperPlane extends Phaser.Physics.Arcade.Sprite {
       body.setAngularVelocity(FlightConstants.TUMBLE_ANGULAR_VELOCITY);
     } else {
       body.setAngularVelocity(0);
-      this.angle = body.velocity.y / FlightConstants.ANGLE_COEFFICIENT;
     }
+  }
+
+  private smoothRotation(): void {
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    const targetAngle = body.velocity.y / FlightConstants.ANGLE_COEFFICIENT;
+    this.angle = Phaser.Math.Linear(this.angle, targetAngle, 0.1);
   }
 }

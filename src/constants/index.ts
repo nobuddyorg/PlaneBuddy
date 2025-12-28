@@ -24,17 +24,17 @@ export const PaperPlaneConstants = {
 };
 
 export const SlingshotConstants = {
-  MAX_DRAG_DISTANCE: 200,
-  VELOCITY_MULTIPLIER: -10,
+  MAX_DRAG_DISTANCE: 100,
+  VELOCITY_MULTIPLIER: -15,
 };
 
 export const FlightConstants = {
-  LIFT_COEFFICIENT: 0.1,
-  LIFT_VELOCITY_DIVISOR: 2,
-  SINK_FORCE: 10,
-  STALL_SPEED: 100,
-  TUMBLE_ANGULAR_VELOCITY: 200,
-  ANGLE_COEFFICIENT: 10,
+  LIFT_COEFFICIENT: 0.05,
+  LIFT_VELOCITY_DIVISOR: 10,
+  SINK_FORCE: 2,
+  STALL_SPEED: 200,
+  TUMBLE_ANGULAR_VELOCITY: 300,
+  ANGLE_COEFFICIENT: 20,
 };
 
 export const CollisionConstants = {

@@ -118,11 +118,18 @@ describe("MainScene", () => {
 
   it("should handle collision correctly when terrain is the landing zone", () => {
     // @ts-expect-error: Suppressing because 'landingZone' is a mock object for testing purposes.
-    scene.landingZone = {};
+    scene.landingZone = { name: "landingZone" };
     scene["_endGame"] = vi.fn();
     scene.gameState = GameState.InFlight;
+    const mockPaperPlane = {
+      body: {
+        velocity: {
+          x: 0,
+        },
+      },
+    };
     // @ts-expect-error: Suppressing because this is a mock object for testing purposes.
-    scene.handleCollision({}, scene.landingZone);
+    scene.handleCollision(mockPaperPlane, scene.landingZone);
     expect(scene["_endGame"]).toHaveBeenCalledWith(true);
   });
 

@@ -49,15 +49,15 @@ export class MainScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(UIConstants.BackgroundColor);
     this.cameras.main.setBounds(
       0,
-      0,
+      -WorldConstants.HEIGHT * 10,
       WorldConstants.WIDTH,
-      WorldConstants.HEIGHT,
+      WorldConstants.HEIGHT * 11,
     );
     this.physics.world.setBounds(
       0,
-      0,
+      -WorldConstants.HEIGHT * 10,
       WorldConstants.WIDTH,
-      WorldConstants.HEIGHT,
+      WorldConstants.HEIGHT * 11,
     );
   }
 
@@ -129,7 +129,11 @@ export class MainScene extends Phaser.Scene {
       return;
     }
 
-    this._endGame(terrain === this.landingZone);
+    const isSuccess =
+      terrain.name === "landingZone" &&
+      Math.abs((paperPlane.body as Phaser.Physics.Arcade.Body).velocity.x) < 1;
+
+    this._endGame(isSuccess);
   }
 
   private _endGame(isSuccess: boolean): void {
