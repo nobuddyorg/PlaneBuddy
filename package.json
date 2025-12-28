@@ -4,8 +4,9 @@
   "description": "A mobile-first 2D side-scrolling browser game using Phaser 3 and TypeScript.",
   "main": "src/main.ts",
   "scripts": {
-    "start": "webpack serve --open",
-    "build": "webpack --mode production",
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest",
     "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
@@ -14,12 +15,12 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.50.1",
     "@typescript-eslint/parser": "^8.50.1",
-    "copy-webpack-plugin": "^13.0.1",
+    "canvas": "^3.2.0",
     "eslint": "^9.39.2",
-    "ts-loader": "^9.2.6",
+    "jsdom": "^27.4.0",
+    "phaser3spectorjs": "^0.0.8",
     "typescript": "^4.5.4",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.7.2"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   }
 }

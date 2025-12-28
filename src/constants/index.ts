@@ -15,7 +15,7 @@ export const LandingZoneConstants = {
   COLOR: 0x00FF00,
 };
 
-export const AirplaneConstants = {
+export const PaperPlaneConstants = {
   START_X: 100,
   START_Y_OFFSET: 150,
   BOUNCE: 0.5,
