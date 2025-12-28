@@ -56,9 +56,7 @@ describe('Slingshot', () => {
         // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
         pointerDownCallback.call(slingshot, pointer);
 
-        // Internal state is not directly testable, but we can verify its effect in pointerup
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect((slingshot as any).dragStart).toEqual(pointer.position);
+        expect(slingshot['dragStart']).toEqual(pointer.position);
     });
 
     it('should not launch if pointerup is fired without a pointerdown', () => {
@@ -84,8 +82,7 @@ describe('Slingshot', () => {
 
         expect(paperPlane.launch).toHaveBeenCalledWith(expectedVelocity);
         expect(onLaunch).toHaveBeenCalled();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect((slingshot as any).dragStart).toBeUndefined();
+        expect(slingshot['dragStart']).toBeUndefined();
     });
 
     it('should cap the launch velocity if the drag distance exceeds the maximum', () => {
@@ -110,8 +107,7 @@ describe('Slingshot', () => {
         // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
         pointerUpCallback.call(slingshot, { position: new Phaser.Math.Vector2(120, 170) });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect((slingshot as any).dragStart).toBeUndefined();
+        expect(slingshot['dragStart']).toBeUndefined();
 
         // A second pointerup should not trigger another launch
         vi.clearAllMocks();
