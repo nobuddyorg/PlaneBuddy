@@ -12,22 +12,28 @@ export class Airplane extends Phaser.Physics.Arcade.Sprite {
       .setDrag(AirplaneConstants.DRAG, AirplaneConstants.DRAG);
   }
 
+  public launch(launchVelocity: Phaser.Math.Vector2): void {
+    (this.body as Phaser.Physics.Arcade.Body).setVelocity(launchVelocity.x, launchVelocity.y);
+  }
+
   public updateAirplane(): void {
-    this._handlePlayerInput();
+    this._applyPlayerInput();
     this._applyFlightPhysics();
   }
 
-  private _handlePlayerInput(): void {
+  private _applyPlayerInput(): void {
     const pointer = this.scene.input.activePointer;
     const body = this.body as Phaser.Physics.Arcade.Body;
 
-    if (pointer.isDown) {
-      if (pointer.y < this.y) {
-        const liftAmount = Math.max(0, body.velocity.x / FlightConstants.LIFT_VELOCITY_DIVISOR);
-        body.velocity.y -= liftAmount * FlightConstants.LIFT_COEFFICIENT;
-      } else {
-        body.velocity.y += FlightConstants.SINK_FORCE;
-      }
+    if (!pointer.isDown) {
+      return;
+    }
+
+    if (pointer.y < this.y) {
+      const liftAmount = Math.max(0, body.velocity.x / FlightConstants.LIFT_VELOCITY_DIVISOR);
+      body.velocity.y -= liftAmount * FlightConstants.LIFT_COEFFICIENT;
+    } else {
+      body.velocity.y += FlightConstants.SINK_FORCE;
     }
   }
 

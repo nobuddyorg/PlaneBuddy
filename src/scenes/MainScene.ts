@@ -12,6 +12,7 @@ import {
 import { Airplane } from '../game-objects/Airplane';
 import { UIManager } from '../ui/UIManager';
 import { Slingshot } from '../game-objects/Slingshot';
+import { GameState } from '../state/GameState';
 
 export class MainScene extends Phaser.Scene {
   private airplane!: Airplane;
@@ -19,7 +20,7 @@ export class MainScene extends Phaser.Scene {
   private slingshot!: Slingshot;
   private ground!: Phaser.GameObjects.Rectangle;
   private landingZone!: Phaser.GameObjects.Rectangle;
-  private isGameOver: boolean = false;
+  private gameState: GameState = GameState.ReadyToLaunch;
 
   constructor() {
     super({ key: 'MainScene' });
@@ -33,8 +34,12 @@ export class MainScene extends Phaser.Scene {
     this.uiManager = new UIManager(this);
     this.setupWorld();
     this.createGameObjects();
-    this.slingshot = new Slingshot(this, this.airplane);
+    this.slingshot = new Slingshot(this, this.airplane, this.onLaunch.bind(this));
     this.setupPhysics();
+  }
+
+  private onLaunch(): void {
+    this.gameState = GameState.InFlight;
   }
 
   private setupWorld(): void {
@@ -82,7 +87,7 @@ export class MainScene extends Phaser.Scene {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleCollision(airplane: any, terrain: any): void {
-    if (this.isGameOver) {
+    if (this.gameState === GameState.GameOver) {
       return;
     }
 
@@ -90,7 +95,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   private _endGame(isSuccess: boolean): void {
-    this.isGameOver = true;
+    this.gameState = GameState.GameOver;
     (this.airplane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
 
     if (isSuccess) {
@@ -105,8 +110,14 @@ export class MainScene extends Phaser.Scene {
   }
 
   update(): void {
-    if (this.slingshot.isLaunched && !this.isGameOver) {
-      this.airplane.updateAirplane();
+    switch (this.gameState) {
+      case GameState.InFlight:
+        this.airplane.updateAirplane();
+        break;
+      case GameState.ReadyToLaunch:
+      case GameState.GameOver:
+        // Do nothing
+        break;
     }
   }
 }
