@@ -1,22 +1,22 @@
 import 'phaser';
-import { AirplaneConstants, FlightConstants } from '../constants';
+import { PaperPlaneConstants, FlightConstants } from '../constants';
 
-export class Airplane extends Phaser.Physics.Arcade.Sprite {
+export class PaperPlane extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, AirplaneConstants.TEXTURE);
+    super(scene, x, y, PaperPlaneConstants.TEXTURE);
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.setBounce(AirplaneConstants.BOUNCE)
+    this.setBounce(PaperPlaneConstants.BOUNCE)
       .setCollideWorldBounds(true)
-      .setDrag(AirplaneConstants.DRAG, AirplaneConstants.DRAG);
+      .setDrag(PaperPlaneConstants.DRAG, PaperPlaneConstants.DRAG);
   }
 
   public launch(launchVelocity: Phaser.Math.Vector2): void {
     (this.body as Phaser.Physics.Arcade.Body).setVelocity(launchVelocity.x, launchVelocity.y);
   }
 
-  public updateAirplane(): void {
+  public updatePaperPlane(): void {
     this._applyPlayerInput();
     this._applyFlightPhysics();
   }

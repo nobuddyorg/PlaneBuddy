@@ -1,16 +1,16 @@
 import 'phaser';
-import { Airplane } from './Airplane';
+import { PaperPlane } from './PaperPlane';
 import { SlingshotConstants } from '../constants';
 
 export class Slingshot {
   private scene: Phaser.Scene;
-  private airplane: Airplane;
+  private paperPlane: PaperPlane;
   private dragStart?: Phaser.Math.Vector2;
   private onLaunch: () => void;
 
-  constructor(scene: Phaser.Scene, airplane: Airplane, onLaunch: () => void) {
+  constructor(scene: Phaser.Scene, paperPlane: PaperPlane, onLaunch: () => void) {
     this.scene = scene;
-    this.airplane = airplane;
+    this.paperPlane = paperPlane;
     this.onLaunch = onLaunch;
 
     this.scene.input.on('pointerdown', this.handlePointerDown, this);
@@ -27,7 +27,7 @@ export class Slingshot {
       const dragVector = dragEnd.subtract(this.dragStart);
       const launchVelocity = this._calculateLaunchVelocity(dragVector);
 
-      this.airplane.launch(launchVelocity);
+      this.paperPlane.launch(launchVelocity);
       this.dragStart = undefined;
       this.onLaunch();
     }

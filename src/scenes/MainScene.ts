@@ -3,17 +3,17 @@ import {
   WorldConstants,
   GroundConstants,
   LandingZoneConstants,
-  AirplaneConstants,
+  PaperPlaneConstants,
   CollisionConstants,
   UIConstants,
 } from '../constants';
-import { Airplane } from '../game-objects/Airplane';
+import { PaperPlane } from '../game-objects/PaperPlane';
 import { UIManager } from '../ui/UIManager';
 import { Slingshot } from '../game-objects/Slingshot';
 import { GameState } from '../state/GameState';
 
 export class MainScene extends Phaser.Scene {
-  private airplane!: Airplane;
+  private paperPlane!: PaperPlane;
   private uiManager!: UIManager;
   private slingshot!: Slingshot;
   private ground!: Phaser.GameObjects.Rectangle;
@@ -32,7 +32,7 @@ export class MainScene extends Phaser.Scene {
     this.uiManager = new UIManager(this);
     this.setupWorld();
     this.createGameObjects();
-    this.slingshot = new Slingshot(this, this.airplane, this.onLaunch.bind(this));
+    this.slingshot = new Slingshot(this, this.paperPlane, this.onLaunch.bind(this));
     this.setupPhysics();
   }
 
@@ -49,7 +49,7 @@ export class MainScene extends Phaser.Scene {
   private createGameObjects(): void {
     this.createGround();
     this.createLandingZone();
-    this.createAirplane();
+    this.createPaperPlane();
   }
 
   private createGround(): void {
@@ -68,18 +68,18 @@ export class MainScene extends Phaser.Scene {
     landingZoneBody.setImmovable(true);
   }
 
-  private createAirplane(): void {
-    this.airplane = new Airplane(this, AirplaneConstants.START_X, this.cameras.main.height - AirplaneConstants.START_Y_OFFSET);
+  private createPaperPlane(): void {
+    this.paperPlane = new PaperPlane(this, PaperPlaneConstants.START_X, this.cameras.main.height - PaperPlaneConstants.START_Y_OFFSET);
   }
 
   private setupPhysics(): void {
-    this.cameras.main.startFollow(this.airplane);
-    this.physics.add.collider(this.airplane, this.ground, this.handleCollision, undefined, this);
-    this.physics.add.collider(this.airplane, this.landingZone, this.handleCollision, undefined, this);
+    this.cameras.main.startFollow(this.paperPlane);
+    this.physics.add.collider(this.paperPlane, this.ground, this.handleCollision, undefined, this);
+    this.physics.add.collider(this.paperPlane, this.landingZone, this.handleCollision, undefined, this);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleCollision(airplane: any, terrain: any): void {
+  handleCollision(paperPlane: any, terrain: any): void {
     if (this.gameState === GameState.GameOver) {
       return;
     }
@@ -89,7 +89,7 @@ export class MainScene extends Phaser.Scene {
 
   private _endGame(isSuccess: boolean): void {
     this.gameState = GameState.GameOver;
-    (this.airplane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
+    (this.paperPlane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
 
     if (isSuccess) {
       this.uiManager.showSuccessMessage();
@@ -105,7 +105,7 @@ export class MainScene extends Phaser.Scene {
   update(): void {
     switch (this.gameState) {
       case GameState.InFlight:
-        this.airplane.updateAirplane();
+        this.paperPlane.updatePaperPlane();
         break;
       case GameState.ReadyToLaunch:
       case GameState.GameOver:

@@ -1,19 +1,19 @@
 import { Slingshot } from './Slingshot';
-import { Airplane } from './Airplane';
+import { PaperPlane } from './PaperPlane';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Phaser from 'phaser';
 import { SlingshotConstants } from '../constants';
 
-// Mock Airplane to isolate Slingshot's behavior
-vi.mock('./Airplane', () => {
-    const MockAirplane = vi.fn();
-    MockAirplane.prototype.launch = vi.fn();
-    return { Airplane: MockAirplane };
+// Mock PaperPlane to isolate Slingshot's behavior
+vi.mock('./PaperPlane', () => {
+    const MockPaperPlane = vi.fn();
+    MockPaperPlane.prototype.launch = vi.fn();
+    return { PaperPlane: MockPaperPlane };
 });
 
 describe('Slingshot', () => {
     let scene: any;
-    let airplane: any;
+    let paperPlane: any;
     let onLaunch: any;
     let slingshot: Slingshot;
     let pointerDownCallback: (pointer: any) => void;
@@ -32,10 +32,10 @@ describe('Slingshot', () => {
             },
         };
 
-        airplane = new (vi.mocked(Airplane))(scene, 0, 0);
+        paperPlane = new (vi.mocked(PaperPlane))(scene, 0, 0);
         onLaunch = vi.fn();
 
-        slingshot = new Slingshot(scene, airplane, onLaunch);
+        slingshot = new Slingshot(scene, paperPlane, onLaunch);
 
         // Extract the registered callbacks
         pointerDownCallback = eventHandlers.get('pointerdown')!;
@@ -59,11 +59,11 @@ describe('Slingshot', () => {
         const pointer = { position: new Phaser.Math.Vector2(200, 250) };
         pointerUpCallback.call(slingshot, pointer);
 
-        expect(airplane.launch).not.toHaveBeenCalled();
+        expect(paperPlane.launch).not.toHaveBeenCalled();
         expect(onLaunch).not.toHaveBeenCalled();
     });
 
-    it('should calculate launch velocity and launch the airplane on pointerup', () => {
+    it('should calculate launch velocity and launch the paperPlane on pointerup', () => {
         const startPos = new Phaser.Math.Vector2(100, 150);
         const endPos = new Phaser.Math.Vector2(120, 170);
 
@@ -73,7 +73,7 @@ describe('Slingshot', () => {
         const dragVector = endPos.clone().subtract(startPos);
         const expectedVelocity = dragVector.clone().scale(SlingshotConstants.VELOCITY_MULTIPLIER);
 
-        expect(airplane.launch).toHaveBeenCalledWith(expectedVelocity);
+        expect(paperPlane.launch).toHaveBeenCalledWith(expectedVelocity);
         expect(onLaunch).toHaveBeenCalled();
         expect((slingshot as any).dragStart).toBeUndefined();
     });
@@ -89,7 +89,7 @@ describe('Slingshot', () => {
         dragVector.normalize().scale(SlingshotConstants.MAX_DRAG_DISTANCE);
         const expectedVelocity = dragVector.clone().scale(SlingshotConstants.VELOCITY_MULTIPLIER);
 
-        expect(airplane.launch).toHaveBeenCalledWith(expectedVelocity);
+        expect(paperPlane.launch).toHaveBeenCalledWith(expectedVelocity);
     });
 
     it('should reset the drag start position after launching', () => {
@@ -101,6 +101,6 @@ describe('Slingshot', () => {
         // A second pointerup should not trigger another launch
         vi.clearAllMocks();
         pointerUpCallback.call(slingshot, { position: new Phaser.Math.Vector2(130, 180) });
-        expect(airplane.launch).not.toHaveBeenCalled();
+        expect(paperPlane.launch).not.toHaveBeenCalled();
     });
 });
