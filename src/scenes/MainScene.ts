@@ -1,58 +1,20 @@
 import 'phaser';
-
-const WorldConstants = {
-  WIDTH: 3840,
-  HEIGHT: 1080,
-};
-
-const GroundConstants = {
-  HEIGHT: 50,
-  COLOR: 0x8B4513,
-};
-
-const LandingZoneConstants = {
-  X: 3000,
-  WIDTH: 400,
-  HEIGHT: 50,
-  COLOR: 0x00FF00,
-};
-
-const AirplaneConstants = {
-  START_X: 100,
-  START_Y_OFFSET: 150,
-  BOUNCE: 0.5,
-  DRAG: 100,
-};
-
-const SlingshotConstants = {
-  MAX_DRAG_DISTANCE: 200,
-  VELOCITY_MULTIPLIER: -10,
-};
-
-const FlightConstants = {
-  LIFT_COEFFICIENT: 0.1,
-  LIFT_VELOCITY_DIVISOR: 2,
-  SINK_FORCE: 10,
-  STALL_SPEED: 100,
-  TUMBLE_ANGULAR_VELOCITY: 200,
-  ANGLE_COEFFICIENT: 10,
-};
-
-const CollisionConstants = {
-  TUMBLE_ANGULAR_VELOCITY: 300,
-};
-
-const UIConstants = {
-  BackgroundColor: '#242526',
-  SuccessMessage: 'Success!',
-  FailureMessage: 'Failure!',
-  SuccessColor: '#00ff00',
-  FailureColor: '#ff0000',
-  FontSize: '64px',
-};
+import {
+  WorldConstants,
+  GroundConstants,
+  LandingZoneConstants,
+  AirplaneConstants,
+  SlingshotConstants,
+  FlightConstants,
+  CollisionConstants,
+  UIConstants,
+} from '../constants';
+import { Airplane } from '../game-objects/Airplane';
+import { UIManager } from '../ui/UIManager';
 
 export class MainScene extends Phaser.Scene {
-  private airplane!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private airplane!: Airplane;
+  private uiManager!: UIManager;
   private ground!: Phaser.GameObjects.Rectangle;
   private landingZone!: Phaser.GameObjects.Rectangle;
   private isLaunched: boolean = false;
@@ -68,6 +30,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.uiManager = new UIManager(this);
     this.setupWorld();
     this.createGameObjects();
     this.setupInputHandling();
@@ -103,10 +66,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   private createAirplane(): void {
-    this.airplane = this.physics.add.sprite(AirplaneConstants.START_X, this.cameras.main.height - AirplaneConstants.START_Y_OFFSET, 'airplane');
-    this.airplane.setBounce(AirplaneConstants.BOUNCE);
-    this.airplane.setCollideWorldBounds(true);
-    this.airplane.setDrag(AirplaneConstants.DRAG, AirplaneConstants.DRAG);
+    this.airplane = new Airplane(this, AirplaneConstants.START_X, this.cameras.main.height - AirplaneConstants.START_Y_OFFSET);
   }
 
   private setupInputHandling(): void {
@@ -136,9 +96,9 @@ export class MainScene extends Phaser.Scene {
     (this.airplane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
 
     if (terrain === this.landingZone) {
-      this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, UIConstants.SuccessMessage, { fontSize: UIConstants.FontSize, color: UIConstants.SuccessColor }).setOrigin(0.5);
+      this.uiManager.showSuccessMessage();
     } else {
-      this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, UIConstants.FailureMessage, { fontSize: UIConstants.FontSize, color: UIConstants.FailureColor }).setOrigin(0.5);
+      this.uiManager.showFailureMessage();
     }
 
     this.input.once('pointerdown', () => {
@@ -177,32 +137,7 @@ export class MainScene extends Phaser.Scene {
 
   update(): void {
     if (this.isLaunched && !this.isGameOver) {
-      this.updateAirplane();
-    }
-  }
-
-  private updateAirplane(): void {
-    const pointer = this.input.activePointer;
-    const airplaneBody = this.airplane.body as Phaser.Physics.Arcade.Body;
-
-    if (pointer.isDown) {
-      if (pointer.y < this.airplane.y) {
-        // Design Decision: Lift is proportional to the plane's horizontal velocity, simulating aerodynamic lift.
-        const liftAmount = Math.max(0, airplaneBody.velocity.x / FlightConstants.LIFT_VELOCITY_DIVISOR);
-        airplaneBody.velocity.y -= liftAmount * FlightConstants.LIFT_COEFFICIENT;
-      } else {
-        // Design Decision: A constant downward force for sinking provides a simple and predictable control.
-        airplaneBody.velocity.y += FlightConstants.SINK_FORCE;
-      }
-    }
-
-    // Design Decision: A stall occurs at low speeds, causing the plane to tumble. This adds a layer of skill to the flight.
-    if (airplaneBody.velocity.x < FlightConstants.STALL_SPEED) {
-      airplaneBody.setAngularVelocity(FlightConstants.TUMBLE_ANGULAR_VELOCITY);
-    } else {
-      airplaneBody.setAngularVelocity(0);
-      // Design Decision: The plane's angle is tied to its vertical velocity, providing visual feedback on its ascent or descent.
-      this.airplane.angle = airplaneBody.velocity.y / FlightConstants.ANGLE_COEFFICIENT;
+      this.airplane.updateAirplane();
     }
   }
 }
