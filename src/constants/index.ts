@@ -20,7 +20,7 @@ export const PaperPlaneConstants = {
   START_Y_OFFSET: 150,
   BOUNCE: 0.5,
   DRAG: 100,
-  TEXTURE: 'airplane',
+  TEXTURE: 'paper-plane',
 };
 
 export const SlingshotConstants = {

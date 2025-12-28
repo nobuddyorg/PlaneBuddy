@@ -25,7 +25,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('airplane', 'assets/airplane.svg');
+    this.load.image('paper-plane', 'assets/paper-plane.svg');
   }
 
   create(): void {
