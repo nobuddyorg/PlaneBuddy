@@ -4,8 +4,6 @@ import {
   GroundConstants,
   LandingZoneConstants,
   AirplaneConstants,
-  SlingshotConstants,
-  FlightConstants,
   CollisionConstants,
   UIConstants,
 } from '../constants';
@@ -80,11 +78,6 @@ export class MainScene extends Phaser.Scene {
     this.physics.add.collider(this.airplane, this.landingZone, this.handleCollision, undefined, this);
   }
 
-  /**
-   * Handles the collision between the airplane and the ground/landing zone.
-   * @param airplane The airplane game object.
-   * @param terrain The terrain game object (ground or landing zone).
-   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleCollision(airplane: any, terrain: any): void {
     if (this.gameState === GameState.GameOver) {
@@ -116,7 +109,6 @@ export class MainScene extends Phaser.Scene {
         break;
       case GameState.ReadyToLaunch:
       case GameState.GameOver:
-        // Do nothing
         break;
     }
   }

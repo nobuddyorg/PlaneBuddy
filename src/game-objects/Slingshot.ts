@@ -14,18 +14,11 @@ export class Slingshot {
     this.onLaunch = onLaunch;
 
     this.scene.input.on('pointerdown', this.handlePointerDown, this);
-    this.scene.input.on('pointermove', this.handlePointerMove, this);
     this.scene.input.on('pointerup', this.handlePointerUp, this);
   }
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
     this.dragStart = pointer.position.clone();
-  }
-
-  private handlePointerMove(pointer: Phaser.Input.Pointer): void {
-    if (this.dragStart) {
-      // Visualize the slingshot power/angle
-    }
   }
 
   private handlePointerUp(pointer: Phaser.Input.Pointer): void {
