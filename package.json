@@ -5,13 +5,17 @@
   "main": "src/main.ts",
   "scripts": {
     "start": "webpack serve --open",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
     "phaser": "^3.55.2"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
     "copy-webpack-plugin": "^13.0.1",
+    "eslint": "^9.39.2",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "webpack": "^5.65.0",
