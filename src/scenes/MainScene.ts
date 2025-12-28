@@ -1,4 +1,5 @@
 import "phaser";
+import paperPlaneImage from "../assets/paper-plane.svg";
 import {
   WorldConstants,
   GroundConstants,
@@ -25,7 +26,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image("paper-plane", "assets/paper-plane.svg");
+    this.load.image("paper-plane", paperPlaneImage);
   }
 
   create(): void {
