@@ -78,8 +78,7 @@ export class MainScene extends Phaser.Scene {
     this.physics.add.collider(this.paperPlane, this.landingZone, this.handleCollision, undefined, this);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleCollision(paperPlane: any, terrain: any): void {
+  handleCollision(paperPlane: Phaser.Types.Physics.Arcade.GameObjectWithBody, terrain: Phaser.Types.Physics.Arcade.GameObjectWithBody): void {
     if (this.gameState === GameState.GameOver) {
       return;
     }

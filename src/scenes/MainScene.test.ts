@@ -7,6 +7,7 @@ describe('MainScene', () => {
 
   beforeEach(() => {
     scene = new MainScene();
+    // @ts-expect-error: Suppressing because 'sys' is a mock object for testing purposes.
     scene.sys = {
       game: {
         config: {
@@ -19,7 +20,8 @@ describe('MainScene', () => {
         on: vi.fn(),
         emit: vi.fn(),
       },
-    } as any;
+    };
+    // @ts-expect-error: Suppressing because 'cameras' is a mock object for testing purposes.
     scene.cameras = {
       main: {
         setBackgroundColor: vi.fn(),
@@ -28,7 +30,8 @@ describe('MainScene', () => {
         width: 800,
         height: 600,
       },
-    } as any;
+    };
+    // @ts-expect-error: Suppressing because 'physics' is a mock object for testing purposes.
     scene.physics = {
       world: {
         setBounds: vi.fn(),
@@ -41,7 +44,8 @@ describe('MainScene', () => {
         existing: vi.fn(),
         collider: vi.fn(),
       },
-    } as any;
+    };
+    // @ts-expect-error: Suppressing because 'add' is a mock object for testing purposes.
     scene.add = {
       rectangle: vi.fn().mockReturnValue({
         body: {
@@ -49,10 +53,11 @@ describe('MainScene', () => {
           setImmovable: vi.fn(),
         },
       }),
-    } as any;
+    };
+    // @ts-expect-error: Suppressing because 'input' is a mock object for testing purposes.
     scene.input = {
       once: vi.fn(),
-    } as any;
+    };
   });
 
   it('should create', () => {
@@ -60,16 +65,19 @@ describe('MainScene', () => {
   });
 
   it('should end the game with success', () => {
+    // @ts-expect-error: Suppressing because 'uiManager' is a mock object for testing purposes.
     scene.uiManager = {
       showSuccessMessage: vi.fn(),
       showFailureMessage: vi.fn(),
-    } as any;
+    };
+    // @ts-expect-error: Suppressing because 'paperPlane' is a mock object for testing purposes.
     scene.paperPlane = {
       body: {
         setAngularVelocity: vi.fn(),
       } as unknown as Phaser.Physics.Arcade.Body,
-    } as any;
-    scene.landingZone = {} as any;
+    };
+    // @ts-expect-error: Suppressing because 'landingZone' is a mock object for testing purposes.
+    scene.landingZone = {};
 
     scene['_endGame'](true);
 
@@ -81,15 +89,17 @@ describe('MainScene', () => {
   });
 
   it('should end the game with failure', () => {
+    // @ts-expect-error: Suppressing because 'uiManager' is a mock object for testing purposes.
     scene.uiManager = {
       showSuccessMessage: vi.fn(),
       showFailureMessage: vi.fn(),
-    } as any;
+    };
+    // @ts-expect-error: Suppressing because 'paperPlane' is a mock object for testing purposes.
     scene.paperPlane = {
       body: {
         setAngularVelocity: vi.fn(),
       } as unknown as Phaser.Physics.Arcade.Body,
-    } as any;
+    };
 
     scene['_endGame'](false);
 
@@ -101,25 +111,30 @@ describe('MainScene', () => {
   });
 
   it('should handle collision correctly when terrain is the landing zone', () => {
-    scene.landingZone = {} as any;
+    // @ts-expect-error: Suppressing because 'landingZone' is a mock object for testing purposes.
+    scene.landingZone = {};
     scene['_endGame'] = vi.fn();
     scene.gameState = GameState.InFlight;
-    scene.handleCollision({} as any, scene.landingZone);
+    // @ts-expect-error: Suppressing because this is a mock object for testing purposes.
+    scene.handleCollision({}, scene.landingZone);
     expect(scene['_endGame']).toHaveBeenCalledWith(true);
   });
 
   it('should handle collision correctly when terrain is not the landing zone', () => {
-    scene.landingZone = {} as any;
+    // @ts-expect-error: Suppressing because 'landingZone' is a mock object for testing purposes.
+    scene.landingZone = {};
     scene['_endGame'] = vi.fn();
     scene.gameState = GameState.InFlight;
-    scene.handleCollision({} as any, {} as any);
+    // @ts-expect-error: Suppressing because this is a mock object for testing purposes.
+    scene.handleCollision({}, {});
     expect(scene['_endGame']).toHaveBeenCalledWith(false);
   });
 
   it('should not handle collision if game is already over', () => {
     scene['_endGame'] = vi.fn();
     scene.gameState = GameState.GameOver;
-    scene.handleCollision({} as any, {} as any);
+    // @ts-expect-error: Suppressing because this is a mock object for testing purposes.
+    scene.handleCollision({}, {});
     expect(scene['_endGame']).not.toHaveBeenCalled();
   });
 });
