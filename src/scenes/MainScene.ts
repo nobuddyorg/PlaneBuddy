@@ -1,49 +1,54 @@
 import 'phaser';
 
-const GameConstants = {
-  World: {
-    WIDTH: 3840,
-    HEIGHT: 1080,
-  },
-  Ground: {
-    HEIGHT: 50,
-    COLOR: 0x8B4513,
-  },
-  LandingZone: {
-    X: 3000,
-    WIDTH: 400,
-    HEIGHT: 50,
-    COLOR: 0x00FF00,
-  },
-  Airplane: {
-    START_X: 100,
-    START_Y_OFFSET: 150,
-    BOUNCE: 0.5,
-    DRAG: 100,
-  },
-  Slingshot: {
-    MAX_DRAG_DISTANCE: 200,
-    VELOCITY_MULTIPLIER: -10,
-  },
-  Flight: {
-    LIFT_COEFFICIENT: 0.1,
-    LIFT_VELOCITY_DIVISOR: 2,
-    SINK_FORCE: 10,
-    STALL_SPEED: 100,
-    TUMBLE_ANGULAR_VELOCITY: 200,
-    ANGLE_COEFFICIENT: 10,
-  },
-  Collision: {
-    TUMBLE_ANGULAR_VELOCITY: 300,
-  },
-  UI: {
-    BackgroundColor: '#242526',
-    SuccessMessage: 'Success!',
-    FailureMessage: 'Failure!',
-    SuccessColor: '#00ff00',
-    FailureColor: '#ff0000',
-    FontSize: '64px',
-  },
+const WorldConstants = {
+  WIDTH: 3840,
+  HEIGHT: 1080,
+};
+
+const GroundConstants = {
+  HEIGHT: 50,
+  COLOR: 0x8B4513,
+};
+
+const LandingZoneConstants = {
+  X: 3000,
+  WIDTH: 400,
+  HEIGHT: 50,
+  COLOR: 0x00FF00,
+};
+
+const AirplaneConstants = {
+  START_X: 100,
+  START_Y_OFFSET: 150,
+  BOUNCE: 0.5,
+  DRAG: 100,
+};
+
+const SlingshotConstants = {
+  MAX_DRAG_DISTANCE: 200,
+  VELOCITY_MULTIPLIER: -10,
+};
+
+const FlightConstants = {
+  LIFT_COEFFICIENT: 0.1,
+  LIFT_VELOCITY_DIVISOR: 2,
+  SINK_FORCE: 10,
+  STALL_SPEED: 100,
+  TUMBLE_ANGULAR_VELOCITY: 200,
+  ANGLE_COEFFICIENT: 10,
+};
+
+const CollisionConstants = {
+  TUMBLE_ANGULAR_VELOCITY: 300,
+};
+
+const UIConstants = {
+  BackgroundColor: '#242526',
+  SuccessMessage: 'Success!',
+  FailureMessage: 'Failure!',
+  SuccessColor: '#00ff00',
+  FailureColor: '#ff0000',
+  FontSize: '64px',
 };
 
 export class MainScene extends Phaser.Scene {
@@ -70,31 +75,38 @@ export class MainScene extends Phaser.Scene {
   }
 
   private setupWorld(): void {
-    this.cameras.main.setBackgroundColor(GameConstants.UI.BackgroundColor);
-    this.cameras.main.setBounds(0, 0, GameConstants.World.WIDTH, GameConstants.World.HEIGHT);
-    this.physics.world.setBounds(0, 0, GameConstants.World.WIDTH, GameConstants.World.HEIGHT);
+    this.cameras.main.setBackgroundColor(UIConstants.BackgroundColor);
+    this.cameras.main.setBounds(0, 0, WorldConstants.WIDTH, WorldConstants.HEIGHT);
+    this.physics.world.setBounds(0, 0, WorldConstants.WIDTH, WorldConstants.HEIGHT);
   }
 
   private createGameObjects(): void {
-    // Create the ground
-    this.ground = this.add.rectangle(0, this.cameras.main.height - GameConstants.Ground.HEIGHT, this.physics.world.bounds.width, GameConstants.Ground.HEIGHT, GameConstants.Ground.COLOR) as unknown as Phaser.GameObjects.Rectangle;
+    this.createGround();
+    this.createLandingZone();
+    this.createAirplane();
+  }
+
+  private createGround(): void {
+    this.ground = this.add.rectangle(0, this.cameras.main.height - GroundConstants.HEIGHT, this.physics.world.bounds.width, GroundConstants.HEIGHT, GroundConstants.COLOR) as unknown as Phaser.GameObjects.Rectangle;
     this.physics.add.existing(this.ground, true);
     const groundBody = this.ground.body as Phaser.Physics.Arcade.Body;
     groundBody.setAllowGravity(false);
     groundBody.setImmovable(true);
+  }
 
-    // Create the landing zone
-    this.landingZone = this.add.rectangle(GameConstants.LandingZone.X, this.cameras.main.height - GameConstants.LandingZone.HEIGHT, GameConstants.LandingZone.WIDTH, GameConstants.LandingZone.HEIGHT, GameConstants.LandingZone.COLOR) as unknown as Phaser.GameObjects.Rectangle;
+  private createLandingZone(): void {
+    this.landingZone = this.add.rectangle(LandingZoneConstants.X, this.cameras.main.height - LandingZoneConstants.HEIGHT, LandingZoneConstants.WIDTH, LandingZoneConstants.HEIGHT, LandingZoneConstants.COLOR) as unknown as Phaser.GameObjects.Rectangle;
     this.physics.add.existing(this.landingZone, true);
     const landingZoneBody = this.landingZone.body as Phaser.Physics.Arcade.Body;
     landingZoneBody.setAllowGravity(false);
     landingZoneBody.setImmovable(true);
+  }
 
-    // Create the airplane
-    this.airplane = this.physics.add.sprite(GameConstants.Airplane.START_X, this.cameras.main.height - GameConstants.Airplane.START_Y_OFFSET, 'airplane');
-    this.airplane.setBounce(GameConstants.Airplane.BOUNCE);
+  private createAirplane(): void {
+    this.airplane = this.physics.add.sprite(AirplaneConstants.START_X, this.cameras.main.height - AirplaneConstants.START_Y_OFFSET, 'airplane');
+    this.airplane.setBounce(AirplaneConstants.BOUNCE);
     this.airplane.setCollideWorldBounds(true);
-    this.airplane.setDrag(GameConstants.Airplane.DRAG, GameConstants.Airplane.DRAG);
+    this.airplane.setDrag(AirplaneConstants.DRAG, AirplaneConstants.DRAG);
   }
 
   private setupInputHandling(): void {
@@ -121,12 +133,12 @@ export class MainScene extends Phaser.Scene {
     }
 
     this.isGameOver = true;
-    (this.airplane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(GameConstants.Collision.TUMBLE_ANGULAR_VELOCITY);
+    (this.airplane.body as Phaser.Physics.Arcade.Body).setAngularVelocity(CollisionConstants.TUMBLE_ANGULAR_VELOCITY);
 
     if (terrain === this.landingZone) {
-      this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, GameConstants.UI.SuccessMessage, { fontSize: GameConstants.UI.FontSize, color: GameConstants.UI.SuccessColor }).setOrigin(0.5);
+      this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, UIConstants.SuccessMessage, { fontSize: UIConstants.FontSize, color: UIConstants.SuccessColor }).setOrigin(0.5);
     } else {
-      this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, GameConstants.UI.FailureMessage, { fontSize: GameConstants.UI.FontSize, color: GameConstants.UI.FailureColor }).setOrigin(0.5);
+      this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, UIConstants.FailureMessage, { fontSize: UIConstants.FontSize, color: UIConstants.FailureColor }).setOrigin(0.5);
     }
 
     this.input.once('pointerdown', () => {
@@ -152,12 +164,12 @@ export class MainScene extends Phaser.Scene {
       const dragVector = dragEnd.subtract(this.dragStart);
 
       // Design Decision: Cap the launch power to prevent excessive force.
-      if (dragVector.length() > GameConstants.Slingshot.MAX_DRAG_DISTANCE) {
-        dragVector.normalize().scale(GameConstants.Slingshot.MAX_DRAG_DISTANCE);
+      if (dragVector.length() > SlingshotConstants.MAX_DRAG_DISTANCE) {
+        dragVector.normalize().scale(SlingshotConstants.MAX_DRAG_DISTANCE);
       }
 
       // Design Decision: The launch velocity is proportional to the drag distance, creating an intuitive slingshot feel.
-      const launchVelocity = dragVector.scale(GameConstants.Slingshot.VELOCITY_MULTIPLIER);
+      const launchVelocity = dragVector.scale(SlingshotConstants.VELOCITY_MULTIPLIER);
       (this.airplane.body as Phaser.Physics.Arcade.Body).setVelocity(launchVelocity.x, launchVelocity.y);
       this.isLaunched = true;
     }
@@ -165,28 +177,32 @@ export class MainScene extends Phaser.Scene {
 
   update(): void {
     if (this.isLaunched && !this.isGameOver) {
-      const pointer = this.input.activePointer;
-      const airplaneBody = this.airplane.body as Phaser.Physics.Arcade.Body;
+      this.updateAirplane();
+    }
+  }
 
-      if (pointer.isDown) {
-        if (pointer.y < this.airplane.y) {
-          // Design Decision: Lift is proportional to the plane's horizontal velocity, simulating aerodynamic lift.
-          const liftAmount = Math.max(0, airplaneBody.velocity.x / GameConstants.Flight.LIFT_VELOCITY_DIVISOR);
-          airplaneBody.velocity.y -= liftAmount * GameConstants.Flight.LIFT_COEFFICIENT;
-        } else {
-          // Design Decision: A constant downward force for sinking provides a simple and predictable control.
-          airplaneBody.velocity.y += GameConstants.Flight.SINK_FORCE;
-        }
-      }
+  private updateAirplane(): void {
+    const pointer = this.input.activePointer;
+    const airplaneBody = this.airplane.body as Phaser.Physics.Arcade.Body;
 
-      // Design Decision: A stall occurs at low speeds, causing the plane to tumble. This adds a layer of skill to the flight.
-      if (airplaneBody.velocity.x < GameConstants.Flight.STALL_SPEED) {
-        airplaneBody.setAngularVelocity(GameConstants.Flight.TUMBLE_ANGULAR_VELOCITY);
+    if (pointer.isDown) {
+      if (pointer.y < this.airplane.y) {
+        // Design Decision: Lift is proportional to the plane's horizontal velocity, simulating aerodynamic lift.
+        const liftAmount = Math.max(0, airplaneBody.velocity.x / FlightConstants.LIFT_VELOCITY_DIVISOR);
+        airplaneBody.velocity.y -= liftAmount * FlightConstants.LIFT_COEFFICIENT;
       } else {
-        airplaneBody.setAngularVelocity(0);
-        // Design Decision: The plane's angle is tied to its vertical velocity, providing visual feedback on its ascent or descent.
-        this.airplane.angle = airplaneBody.velocity.y / GameConstants.Flight.ANGLE_COEFFICIENT;
+        // Design Decision: A constant downward force for sinking provides a simple and predictable control.
+        airplaneBody.velocity.y += FlightConstants.SINK_FORCE;
       }
+    }
+
+    // Design Decision: A stall occurs at low speeds, causing the plane to tumble. This adds a layer of skill to the flight.
+    if (airplaneBody.velocity.x < FlightConstants.STALL_SPEED) {
+      airplaneBody.setAngularVelocity(FlightConstants.TUMBLE_ANGULAR_VELOCITY);
+    } else {
+      airplaneBody.setAngularVelocity(0);
+      // Design Decision: The plane's angle is tied to its vertical velocity, providing visual feedback on its ascent or descent.
+      this.airplane.angle = airplaneBody.velocity.y / FlightConstants.ANGLE_COEFFICIENT;
     }
   }
 }
