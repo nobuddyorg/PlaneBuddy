@@ -78,6 +78,7 @@ export class MainScene extends Phaser.Scene {
   this.ground.displayHeight = GroundConstants.HEIGHT;
   this.ground.setTint(GroundConstants.COLOR);
   this.ground.refreshBody();
+  this.ground.setName('ground');
   }
 
   private createLandingZone(): void {
@@ -91,6 +92,7 @@ export class MainScene extends Phaser.Scene {
   this.landingZone.displayHeight = LandingZoneConstants.HEIGHT;
   this.landingZone.setTint(LandingZoneConstants.COLOR);
   this.landingZone.refreshBody();
+  this.landingZone.setName('landingZone');
   }
 
   private createPaperPlane(): void {

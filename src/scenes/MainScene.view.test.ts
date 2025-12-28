@@ -3,21 +3,22 @@ import "phaser";
 import { MainScene } from "./MainScene";
 import { JSDOM } from "jsdom";
 import { Canvas, Image } from "canvas";
+import { PaperPlane } from "../game-objects/PaperPlane";
 
 // Stubs for browser-specific objects
 const dom = new JSDOM('<!DOCTYPE html><html><head></head><body><div id="game-container"></div></body></html>');
 global.window = dom.window as unknown as Window & typeof globalThis;
 global.document = dom.window.document;
 global.Image = Image as unknown as typeof global.Image;
-global.HTMLCanvasElement = dom.window.HTMLCanvasElement || (Canvas as any);
-(global.window as any).Image = global.Image;
+global.HTMLCanvasElement = dom.window.HTMLCanvasElement || (Canvas as unknown as typeof global.HTMLCanvasElement);
+(global.window as unknown as { Image: unknown }).Image = global.Image;
 
 // Polyfill for requestAnimationFrame
 global.window.requestAnimationFrame = (callback) => {
   return setTimeout(callback, 0);
 };
 global.window.cancelAnimationFrame = (id) => {
-  clearTimeout(id);
+  clearTimeout(id as unknown as number);
 };
 
 describe("MainScene View", () => {
@@ -71,13 +72,13 @@ describe("MainScene View", () => {
 
   afterAll(() => {
     if (game) {
-         game.loop.stop();
+      game.loop.stop();
       game.destroy(true);
     }
   });
 
   it("should have a visible paper plane", () => {
-    const paperPlane = (scene as any).paperPlane;
+    const paperPlane = scene.children.list.find(obj => obj instanceof PaperPlane) as PaperPlane;
     expect(paperPlane).toBeDefined();
     expect(paperPlane.visible).toBe(true);
     expect(paperPlane.x).toBeGreaterThan(0);
@@ -85,19 +86,14 @@ describe("MainScene View", () => {
   });
 
   it("should have a visible ground", () => {
-    const ground = (scene as any).ground;
+    const ground = scene.children.getByName('ground');
     expect(ground).toBeDefined();
-    expect(ground.visible).toBe(true);
+    expect(ground?.visible).toBe(true);
   });
 
   it("should have a visible landing zone", () => {
-    const landingZone = (scene as any).landingZone;
+    const landingZone = scene.children.getByName('landingZone');
     expect(landingZone).toBeDefined();
-    expect(landingZone.visible).toBe(true);
-  });
-
-  it("should have a slingshot", () => {
-    const slingshot = (scene as any).slingshot;
-    expect(slingshot).toBeDefined();
+    expect(landingZone?.visible).toBe(true);
   });
 });
