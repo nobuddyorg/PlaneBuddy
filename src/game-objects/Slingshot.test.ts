@@ -12,21 +12,16 @@ vi.mock('./PaperPlane', () => {
 });
 
 describe('Slingshot', () => {
-    // @ts-expect-error: Suppressing because 'scene' is a mock object for testing purposes.
-    let scene: Phaser.Scene;
-    let paperPlane: PaperPlane;
-    let onLaunch: () => void;
-    let slingshot: Slingshot;
-    // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-    let pointerDownCallback: (pointer: Phaser.Input.Pointer) => void;
-    // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-    let pointerUpCallback: (pointer: Phaser.Input.Pointer) => void;
+    let scene: Phaser.Scene = null!;
+    let paperPlane: PaperPlane = null!;
+    let onLaunch: () => void = null!;
+    let slingshot: Slingshot = null!;
+    let pointerDownCallback: (pointer: Phaser.Input.Pointer) => void = null!;
+    let pointerUpCallback: (pointer: Phaser.Input.Pointer) => void = null!;
 
     beforeEach(() => {
         vi.clearAllMocks();
 
-        // Capture the event callbacks to trigger them manually
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
         const eventHandlers = new Map<string, (pointer: Phaser.Input.Pointer) => void>();
         scene = {
             input: {
@@ -52,16 +47,14 @@ describe('Slingshot', () => {
     });
 
     it('should store the drag start position on pointerdown', () => {
-        const pointer = { position: new Phaser.Math.Vector2(100, 150) };
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
+        const pointer = { position: new Phaser.Math.Vector2(100, 150) } as Phaser.Input.Pointer;
         pointerDownCallback.call(slingshot, pointer);
 
         expect(slingshot['dragStart']).toEqual(pointer.position);
     });
 
     it('should not launch if pointerup is fired without a pointerdown', () => {
-        const pointer = { position: new Phaser.Math.Vector2(200, 250) };
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
+        const pointer = { position: new Phaser.Math.Vector2(200, 250) } as Phaser.Input.Pointer;
         pointerUpCallback.call(slingshot, pointer);
 
         expect(paperPlane.launch).not.toHaveBeenCalled();
@@ -72,10 +65,8 @@ describe('Slingshot', () => {
         const startPos = new Phaser.Math.Vector2(100, 150);
         const endPos = new Phaser.Math.Vector2(120, 170);
 
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerDownCallback.call(slingshot, { position: startPos });
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerUpCallback.call(slingshot, { position: endPos });
+        pointerDownCallback.call(slingshot, { position: startPos } as Phaser.Input.Pointer);
+        pointerUpCallback.call(slingshot, { position: endPos } as Phaser.Input.Pointer);
 
         const dragVector = endPos.clone().subtract(startPos);
         const expectedVelocity = dragVector.clone().scale(SlingshotConstants.VELOCITY_MULTIPLIER);
@@ -89,10 +80,8 @@ describe('Slingshot', () => {
         const startPos = new Phaser.Math.Vector2(100, 100);
         const endPos = new Phaser.Math.Vector2(100, 100 + SlingshotConstants.MAX_DRAG_DISTANCE + 50);
 
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerDownCallback.call(slingshot, { position: startPos });
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerUpCallback.call(slingshot, { position: endPos });
+        pointerDownCallback.call(slingshot, { position: startPos } as Phaser.Input.Pointer);
+        pointerUpCallback.call(slingshot, { position: endPos } as Phaser.Input.Pointer);
 
         const dragVector = endPos.clone().subtract(startPos);
         dragVector.normalize().scale(SlingshotConstants.MAX_DRAG_DISTANCE);
@@ -102,17 +91,14 @@ describe('Slingshot', () => {
     });
 
     it('should reset the drag start position after launching', () => {
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerDownCallback.call(slingshot, { position: new Phaser.Math.Vector2(100, 150) });
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerUpCallback.call(slingshot, { position: new Phaser.Math.Vector2(120, 170) });
+        pointerDownCallback.call(slingshot, { position: new Phaser.Math.Vector2(100, 150) } as Phaser.Input.Pointer);
+        pointerUpCallback.call(slingshot, { position: new Phaser.Math.Vector2(120, 170) } as Phaser.Input.Pointer);
 
         expect(slingshot['dragStart']).toBeUndefined();
 
         // A second pointerup should not trigger another launch
         vi.clearAllMocks();
-        // @ts-expect-error: Suppressing because 'pointer' is a mock object for testing purposes.
-        pointerUpCallback.call(slingshot, { position: new Phaser.Math.Vector2(130, 180) });
+        pointerUpCallback.call(slingshot, { position: new Phaser.Math.Vector2(130, 180) } as Phaser.Input.Pointer);
         expect(paperPlane.launch).not.toHaveBeenCalled();
     });
 });
