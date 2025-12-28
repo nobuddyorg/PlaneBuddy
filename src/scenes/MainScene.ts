@@ -1,5 +1,4 @@
 import "phaser";
-import paperPlaneImage from "../assets/paper-plane.svg";
 import {
   WorldConstants,
   GroundConstants,
@@ -17,8 +16,8 @@ export class MainScene extends Phaser.Scene {
   private paperPlane!: PaperPlane;
   private uiManager!: UIManager;
   private slingshot!: Slingshot;
-  private ground!: Phaser.GameObjects.Rectangle;
-  private landingZone!: Phaser.GameObjects.Rectangle;
+  private ground!: Phaser.Physics.Arcade.Image;
+  private landingZone!: Phaser.Physics.Arcade.Image;
   private gameState: GameState = GameState.ReadyToLaunch;
 
   constructor() {
@@ -26,7 +25,8 @@ export class MainScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image("paper-plane", paperPlaneImage);
+    this.load.image("paper-plane", "assets/paper-plane.svg");
+    this.textures.generate("pixel", { data: ["1"], pixelWidth: 1 });
   }
 
   create(): void {
@@ -68,31 +68,31 @@ export class MainScene extends Phaser.Scene {
   }
 
   private createGround(): void {
-    this.ground = this.add.rectangle(
+    this.ground = this.physics.add.staticImage(
       0,
-      this.cameras.main.height - GroundConstants.HEIGHT,
-      this.physics.world.bounds.width,
-      GroundConstants.HEIGHT,
-      GroundConstants.COLOR,
-    ) as unknown as Phaser.GameObjects.Rectangle;
-    this.physics.add.existing(this.ground, true);
-    const groundBody = this.ground.body as Phaser.Physics.Arcade.Body;
-    groundBody.setAllowGravity(false);
-    groundBody.setImmovable(true);
+      this.cameras.main.height - GroundConstants.HEIGHT / 2,
+      "pixel",
+    );
+    this.ground.setOrigin(0, 0.5);
+    this.ground.displayWidth = this.physics.world.bounds.width;
+    this.ground.displayHeight = GroundConstants.HEIGHT;
+    this.ground.setTint(GroundConstants.COLOR);
+    this.ground.refreshBody();
+    this.ground.setName("ground");
   }
 
   private createLandingZone(): void {
-    this.landingZone = this.add.rectangle(
+    this.landingZone = this.physics.add.staticImage(
       LandingZoneConstants.X,
-      this.cameras.main.height - LandingZoneConstants.HEIGHT,
-      LandingZoneConstants.WIDTH,
-      LandingZoneConstants.HEIGHT,
-      LandingZoneConstants.COLOR,
-    ) as unknown as Phaser.GameObjects.Rectangle;
-    this.physics.add.existing(this.landingZone, true);
-    const landingZoneBody = this.landingZone.body as Phaser.Physics.Arcade.Body;
-    landingZoneBody.setAllowGravity(false);
-    landingZoneBody.setImmovable(true);
+      this.cameras.main.height - LandingZoneConstants.HEIGHT / 2,
+      "pixel",
+    );
+    this.landingZone.setOrigin(0, 0.5);
+    this.landingZone.displayWidth = LandingZoneConstants.WIDTH;
+    this.landingZone.displayHeight = LandingZoneConstants.HEIGHT;
+    this.landingZone.setTint(LandingZoneConstants.COLOR);
+    this.landingZone.refreshBody();
+    this.landingZone.setName("landingZone");
   }
 
   private createPaperPlane(): void {
